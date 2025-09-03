@@ -569,7 +569,7 @@
         findingsContainer.appendChild(
           createToggleButtons(
             'Enkapsülasyon',
-            ['Yoktur', 'Vardır', 'Kısmen vardır'],
+            ['Yoktur', 'VARDIR', 'Kısmen VARDIR'],
             tumor.encapsulation,
             (value) => {
               tumor.encapsulation = value;
@@ -591,7 +591,7 @@
         const lviContainer = createElement('div', { className: 'lvi-container' });
         const lviButtons = createToggleButtons(
           'Lenfatik ve/veya venöz invazyon',
-          ['yoktur', 'VARDIR', 'kuşkulu vardır'],
+          ['yoktur', 'VARDIR', 'kuşkulu VARDIR'],
           tumor.lvInvasion,
           (value) => {
             tumor.lvInvasion = value;
@@ -865,8 +865,8 @@
         let lviText = `Lenfatik ve/veya venöz invazyon: ${tumor.lvInvasion}`;
         if (tumor.lvInvasion === 'VARDIR') {
           lviText += `. Lenfatik invazyon ${
-            tumor.lymphaticInvasion ? 'vardır' : 'yoktur'
-          }. Anjioinvazyon ${tumor.angioinvasion ? 'vardır' : 'yoktur'}.`;
+            tumor.lymphaticInvasion ? 'VARDIR' : 'yoktur'
+          }. Anjioinvazyon ${tumor.angioinvasion ? 'VARDIR' : 'yoktur'}.`;
         }
         text += `${indent}${lviText}\n`;
 
@@ -906,7 +906,7 @@
           }
           report += '\n' + generateFindingsText(tumor);
         } else {
-          report += `Tümör Odaklılığı: ${tumors.length} odaklıdır. Multifokal tümör vardır.\n\n`;
+          report += `Tümör Odaklılığı: ${tumors.length} odaklıdır. Multifokal tümör VARDIR.\n\n`;
           report += `Tümör odakları:\n`;
           tumors.forEach((t, i) => {
             const tumorDiagnosis = getTumorDiagnosisName(t.size);
@@ -924,7 +924,7 @@
         // Global findings are added after tumor details
         report += '\n';
         report += `Cerrahi sınırlarda tümör: ${
-          globalFindings.surgicalMargins ? 'vardır' : 'yoktur'
+          globalFindings.surgicalMargins ? 'VARDIR' : 'yoktur'
         }\n`;
 
         if (lymphNodes.length > 0) {
@@ -933,16 +933,16 @@
             if (ln.metastatic > 0) {
               report += `${
                 ln.location ? ln.location + ' komşuluğunda ' : ''
-              }${ln.total} lenf nodunun ${ln.metastatic}'inde metastaz vardır (${
+              }${ln.total} lenf nodunun ${ln.metastatic}'inde metastaz VARDIR (${
                 ln.metastatic
               }/${ln.total}). `;
             } else {
               report += `${
                 ln.location ? ln.location + ' komşuluğunda ' : ''
-              }${ln.total} adet reaktif lenf nodu vardır (0/${ln.total}). `;
+              }${ln.total} adet reaktif lenf nodu VARDIR (0/${ln.total}). `;
             }
             report += `Perikapsüler invazyon ${
-              ln.pericapsularInvasion ? 'vardır' : 'yoktur'
+              ln.pericapsularInvasion ? 'VARDIR' : 'yoktur'
             }.\n`;
           });
         }
