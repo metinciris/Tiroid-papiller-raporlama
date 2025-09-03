@@ -142,6 +142,11 @@
         flex-direction: column;
       }
 
+      .form-field.small {
+        min-width: 100px;
+        flex: 0.5;
+      }
+
       .form-field label {
         margin-bottom: 6px;
         font-size: 0.9em;
@@ -527,13 +532,17 @@
         });
         row1.appendChild(sizeInput);
 
+        // Örnek No alanını daha geniş yapalım
         const sampleInput = createInput(
           `tumor-sample-${tumor.id}`,
           'Örnek No',
           'text',
           tumor.sample,
         );
-        sampleInput.addEventListener('input', (e) => {
+        sampleInput.classList.add('small');
+        sampleInput.querySelector('input').setAttribute('maxlength', '15');
+        sampleInput.querySelector('input').setAttribute('placeholder', 'A1-A3, B5 vb.');
+        sampleInput.querySelector('input').addEventListener('input', (e) => {
           tumor.sample = e.target.value;
           render();
         });
@@ -693,6 +702,7 @@
           'number',
           ln.metastatic.toString(),
         );
+        metastaticInput.classList.add('small');
         metastaticInput.addEventListener('input', (e) => {
           ln.metastatic = Number(e.target.value);
           render();
@@ -705,6 +715,7 @@
           'number',
           ln.total.toString(),
         );
+        totalInput.classList.add('small');
         totalInput.addEventListener('input', (e) => {
           ln.total = Number(e.target.value);
           render();
@@ -897,11 +908,14 @@
         } else {
           report += `Tümör Odaklılığı: ${tumors.length} odaklıdır. Multifokal tümör vardır.\n\n`;
           report += `Tümör odakları:\n`;
-          tumors.forEach((t) => {
+          tumors.forEach((t, i) => {
             const tumorDiagnosis = getTumorDiagnosisName(t.size);
-            report += `- ${t.location}, çapı ${t.size} mm, ${tumorDiagnosis}, ${t.subtypes.join(' ve ')} histolojisindedir.`;
-            if (t.sample) report += ` (${t.sample} örneği)`;
-            report += '\n';
+            // Tümör numarasını ekleyelim
+            report += `${i + 1}. Tümör: ${tumorDiagnosis}\n`;
+            report += `- Yerleşim: ${t.location}\n`;
+            report += `- Çap: ${t.size} mm\n`;
+            report += `- Histoloji: ${t.subtypes.join(' ve ')}\n`;
+            if (t.sample) report += `- Örnek No: ${t.sample}\n`;
             report += generateFindingsText(t, '  '); // Indent findings for each focus
             report += '\n';
           });
