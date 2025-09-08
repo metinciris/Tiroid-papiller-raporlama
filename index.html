@@ -20,7 +20,7 @@
         --danger-hover-color: #c82333;
         --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
           'Helvetica Neue', Arial, sans-serif;
-        /* Yeni: tümör odakları için iki zemin rengi */
+        /* Tümör odakları için iki zemin rengi */
         --focus-a: #f6f9ff; /* yumuşak mavi */
         --focus-b: #fff7e8; /* yumuşak turuncu */
       }
@@ -68,7 +68,7 @@
       .panel {
         padding: 20px;
         overflow-y: auto;
-        height: calc(100vh - 95px); /* header yüksekliğine göre ayarla */
+        height: calc(100vh - 95px);
       }
 
       #controls-panel {
@@ -103,8 +103,7 @@
         color: var(--text-color);
         border-radius: 4px;
         padding: 16px;
-        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier,
-          monospace;
+        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
         font-size: 0.95em;
         line-height: 1.6;
         white-space: pre-wrap;
@@ -194,51 +193,20 @@
         gap: 6px;
       }
 
-      button:hover {
-        background: var(--button-hover-background);
-        border-color: #adb5bd;
-      }
+      button:hover { background: var(--button-hover-background); border-color: #adb5bd; }
 
       button.primary,
-      #copy-report-btn {
-        background: var(--primary-color);
-        border-color: var(--primary-color);
-        color: #fff;
-      }
+      #copy-report-btn { background: var(--primary-color); border-color: var(--primary-color); color: #fff; }
 
       button.primary:hover,
-      #copy-report-btn:hover {
-        background: var(--primary-hover-color);
-        border-color: var(--primary-hover-color);
-      }
+      #copy-report-btn:hover { background: var(--primary-hover-color); border-color: var(--primary-hover-color); }
 
-      button.danger {
-        background-color: var(--danger-color);
-        border-color: var(--danger-color);
-        color: #fff;
-      }
+      button.danger { background-color: var(--danger-color); border-color: var(--danger-color); color: #fff; }
+      button.danger:hover { background-color: var(--danger-hover-color); border-color: var(--danger-hover-color); }
 
-      button.danger:hover {
-        background-color: var(--danger-hover-color);
-        border-color: var(--danger-hover-color);
-      }
-
-      .toggle-buttons {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-
-      .toggle-btn {
-        background-color: var(--button-background);
-        border: 1px solid #ced4da;
-      }
-
-      .toggle-btn.active {
-        background-color: var(--danger-color);
-        border-color: var(--danger-color);
-        color: #fff;
-      }
+      .toggle-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+      .toggle-btn { background-color: var(--button-background); border: 1px solid #ced4da; }
+      .toggle-btn.active { background-color: var(--danger-color); border-color: var(--danger-color); color: #fff; }
 
       .tumor-focus {
         border: 1px solid #e9ecef;
@@ -246,7 +214,6 @@
         margin-top: 16px;
         border-radius: 6px;
         position: relative;
-        /* varsayılan zemin kaldırıldı; her bir odak için sınıfla atanacak */
       }
       .tumor-focus.focus-a { background-color: var(--focus-a); }
       .tumor-focus.focus-b { background-color: var(--focus-b); }
@@ -258,30 +225,12 @@
         margin-bottom: 16px;
       }
 
-      .tumor-focus-header h4 {
-        margin: 0;
-        font-size: 1.05em;
-      }
+      .tumor-focus-header h4 { margin: 0; font-size: 1.05em; }
 
-      .checkbox-group {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-      .checkbox-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .checkbox-wrapper input[type='checkbox'] {
-        width: 16px;
-        height: 16px;
-      }
-      .checkbox-wrapper label {
-        margin: 0;
-        font-weight: normal;
-        color: var(--text-color);
-      }
+      .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+      .checkbox-wrapper { display: flex; align-items: center; gap: 8px; }
+      .checkbox-wrapper input[type='checkbox'] { width: 16px; height: 16px; }
+      .checkbox-wrapper label { margin: 0; font-weight: normal; color: var(--text-color); }
 
       /* Scrollbar */
       ::-webkit-scrollbar { width: 10px; }
@@ -294,10 +243,7 @@
     <div class="container">
       <header class="app-header">
         <h1>Tiroid Papiller Karsinom Rapor Oluşturucu</h1>
-        <p>
-          Raporu oluşturmak için sol paneldeki seçenekleri kullanın. Rapor sağ
-          tarafta anlık olarak güncellenecektir.
-        </p>
+        <p>Raporu oluşturmak için sol paneldeki seçenekleri kullanın. Rapor sağ tarafta anlık olarak güncellenecektir.</p>
       </header>
       <main class="main-content">
         <div id="controls-panel" class="panel"></div>
@@ -334,31 +280,19 @@
             necrosis: false,
           },
         ],
-        globalFindings: {
-          surgicalMargins: false,
-        },
+        globalFindings: { surgicalMargins: false },
         lymphNodes: [],
         backgroundThyroid: ['Nodüler guatr'],
+        freeNote: '', // Tanı altına serbest not
       };
 
       const HISTOLOGIC_SUBTYPES = [
-        'Klasik papiller karsinom',
-        'İnfiltratif foliküler alt tip',
-        'Onkositik papiller alt tip',
-        'Warthin benzeri alt tip',
-        'Tall cell alt tip',
-        'Hobnail alt tip',
-        'Solid alt tip',
-        'NIFTP',
-        'Diffüz sklerozan alt tip',
+        'Klasik papiller karsinom','İnfiltratif foliküler alt tip','Onkositik papiller alt tip',
+        'Warthin benzeri alt tip','Tall cell alt tip','Hobnail alt tip','Solid alt tip','NIFTP','Diffüz sklerozan alt tip',
       ];
 
       const BACKGROUND_THYROID_OPTIONS = [
-        'Nodüler guatr',
-        'Fokal lenfositik tiroidit',
-        'Yaygın lenfositik tiroidit',
-        'Hashimoto tiroiditi',
-        'Kolloidden zengin',
+        'Nodüler guatr','Fokal lenfositik tiroidit','Yaygın lenfositik tiroidit','Hashimoto tiroiditi','Kolloidden zengin',
       ];
 
       // --- DOM ELEMENTS ---
@@ -366,7 +300,7 @@
       const reportPreview = document.getElementById('report-preview');
       const copyReportBtn = document.getElementById('copy-report-btn');
 
-      // --- UTILITY FUNCTIONS ---
+      // --- UTILITY ---
       function createElement(tagName, options) {
         const el = document.createElement(tagName);
         if (options?.className) el.className = options.className;
@@ -376,24 +310,29 @@
         return el;
       }
 
-      // --- RENDER FUNCTIONS ---
+      // --- RENDER CONTROLS ---
       function renderControls() {
         controlsPanel.innerHTML = '';
 
-        // Specimen Type
+        // Specimen Type + Serbest Not
         const specimenGroup = createControlGroup('Tanı Bilgileri');
         const specimenSelect = createSelect(
-          'specimenType',
-          'Materyal Tipi',
-          ['Total Tiroidektomi', 'Konsültasyon, Total tiroidektomi'],
-          state.specimenType,
+          'specimenType','Materyal Tipi',
+          ['Total Tiroidektomi','Konsültasyon, Total tiroidektomi'],
+          state.specimenType
         );
-        // Yalnızca raporu güncelle (kontrolleri yeniden çizme!)
         specimenSelect.addEventListener('change', (e) => {
           state.specimenType = e.target.value;
-          renderReport();
+          renderReport(); // yalnız rapor
         });
         specimenGroup.appendChild(specimenSelect);
+
+        const noteField = createTextarea('diagnosis-note', 'Tanı altına not (serbest yazı)', state.freeNote || '');
+        noteField.querySelector('textarea').addEventListener('input', (e) => {
+          state.freeNote = e.target.value;
+          renderReport(); // yalnız rapor
+        });
+        specimenGroup.appendChild(noteField);
         controlsPanel.appendChild(specimenGroup);
 
         // Tumor Foci
@@ -407,8 +346,9 @@
           innerHTML: '<i class="fa-solid fa-plus"></i> Tümör Odağı Ekle',
         });
         addTumorBtn.addEventListener('click', () => {
+          const newId = Date.now();
           state.tumors.unshift({
-            id: Date.now(),
+            id: newId,
             location: 'Sol lob',
             size: 3,
             sample: '',
@@ -422,8 +362,12 @@
             mitoticActivity: '0',
             necrosis: false,
           });
-          render();
+          render(); // yeni kart en üste çizilsin
           controlsPanel.scrollTo({ top: 0, behavior: 'smooth' });
+          requestAnimationFrame(() => {
+            const sampleEl = document.getElementById(`tumor-sample-${newId}`);
+            if (sampleEl) sampleEl.focus(); // imleç Örnek No'ya
+          });
         });
         tumorsGroup.appendChild(addTumorBtn);
         controlsPanel.appendChild(tumorsGroup);
@@ -436,7 +380,7 @@
             state.globalFindings.surgicalMargins,
             (value) => {
               state.globalFindings.surgicalMargins = value;
-              render(); // toggle görseli için tam render
+              render(); // buton görünümü değişir
             },
           ),
         );
@@ -472,7 +416,7 @@
           state.backgroundThyroid,
           (newSelection) => {
             state.backgroundThyroid = newSelection;
-            renderReport(); // sadece rapor değişir
+            renderReport(); // yalnız rapor
           },
         );
         backgroundGroup.appendChild(backgroundCheckboxes);
@@ -494,9 +438,7 @@
             render();
           }
         });
-        if (state.tumors.length <= 1) {
-          removeBtn.setAttribute('disabled', 'true');
-        }
+        if (state.tumors.length <= 1) removeBtn.setAttribute('disabled', 'true');
         header.appendChild(removeBtn);
         container.appendChild(header);
 
@@ -510,7 +452,7 @@
         );
         locationSelect.addEventListener('change', (e) => {
           tumor.location = e.target.value;
-          renderReport(); // sadece rapor
+          renderReport(); // yalnız rapor
         });
         row1.appendChild(locationSelect);
 
@@ -522,25 +464,24 @@
         );
         sizeInput.addEventListener('input', (e) => {
           tumor.size = Number(e.target.value || 0);
-          renderReport(); // sadece rapor
+          renderReport(); // yalnız rapor
         });
         row1.appendChild(sizeInput);
 
-        // Örnek No: geniş ve akıcı giriş, re-render yok
+        // Örnek No: yazarken panel yeniden çizilmez
         const sampleInput = createInput(
           `tumor-sample-${tumor.id}`,
           'Örnek No',
           'text',
           tumor.sample,
         );
-        // genişlik kısıtlaması yok, yazmayı kolaylaştır
         const sampleEl = sampleInput.querySelector('input');
         sampleEl.setAttribute('maxlength', '25');
         sampleEl.setAttribute('placeholder', 'A1-A3, B5 vb.');
         sampleEl.setAttribute('inputmode', 'latin');
         sampleEl.addEventListener('input', (e) => {
           tumor.sample = e.target.value;
-          renderReport(); // sadece rapor güncelle, focus/caret bozulmasın
+          renderReport(); // caret bozulmasın
         });
         row1.appendChild(sampleInput);
         container.appendChild(row1);
@@ -553,34 +494,26 @@
         );
         subtypeSelect.addEventListener('change', (e) => {
           tumor.subtypes = [e.target.value];
-          renderReport(); // sadece rapor
+          renderReport(); // yalnız rapor
         });
         container.appendChild(subtypeSelect);
 
         // --- Per-Focus Findings ---
-        const findingsContainer = createElement('div', {
-          className: 'tumor-findings',
-        });
+        const findingsContainer = createElement('div', { className: 'tumor-findings' });
 
         findingsContainer.appendChild(
           createToggleButtons(
             'Enkapsülasyon',
             ['Yoktur', 'VARDIR', 'Kısmen VARDIR'],
             tumor.encapsulation,
-            (value) => {
-              tumor.encapsulation = value;
-              render(); // toggle görünümü için tam render
-            },
+            (value) => { tumor.encapsulation = value; render(); },
           ),
         );
         findingsContainer.appendChild(
           createBooleanToggle(
             'Tiroid dışı invazyon',
             tumor.extrathyroidalExtension,
-            (value) => {
-              tumor.extrathyroidalExtension = value;
-              render(); // buton görünümü değişir
-            },
+            (value) => { tumor.extrathyroidalExtension = value; render(); },
           ),
         );
 
@@ -591,48 +524,26 @@
           tumor.lvInvasion,
           (value) => {
             tumor.lvInvasion = value;
-            if (value !== 'VARDIR') {
-              tumor.lymphaticInvasion = false;
-              tumor.angioinvasion = false;
-            }
-            render(); // alt seçeneklerin görünürlüğü değişir
+            if (value !== 'VARDIR') { tumor.lymphaticInvasion = false; tumor.angioinvasion = false; }
+            render();
           },
         );
         lviContainer.appendChild(lviButtons);
 
         if (tumor.lvInvasion === 'VARDIR') {
-          const subLviContainer = createElement('div', {
-            className: 'sub-findings',
-          });
+          const subLviContainer = createElement('div', { className: 'sub-findings' });
           subLviContainer.appendChild(
-            createBooleanToggle(
-              'Lenfatik invazyon',
-              tumor.lymphaticInvasion,
-              (value) => {
-                tumor.lymphaticInvasion = value;
-                render();
-              },
-            ),
+            createBooleanToggle('Lenfatik invazyon', tumor.lymphaticInvasion, (value) => { tumor.lymphaticInvasion = value; render(); }),
           );
           subLviContainer.appendChild(
-            createBooleanToggle('Anjioinvazyon', tumor.angioinvasion, (value) => {
-              tumor.angioinvasion = value;
-              render();
-            }),
+            createBooleanToggle('Anjioinvazyon', tumor.angioinvasion, (value) => { tumor.angioinvasion = value; render(); }),
           );
           lviContainer.appendChild(subLviContainer);
         }
         findingsContainer.appendChild(lviContainer);
 
         findingsContainer.appendChild(
-          createBooleanToggle(
-            'Perinöral invazyon',
-            tumor.perineuralInvasion,
-            (value) => {
-              tumor.perineuralInvasion = value;
-              render();
-            },
-          ),
+          createBooleanToggle('Perinöral invazyon', tumor.perineuralInvasion, (value) => { tumor.perineuralInvasion = value; render(); }),
         );
 
         const mitoticInput = createInput(
@@ -648,14 +559,10 @@
         findingsContainer.appendChild(mitoticInput);
 
         findingsContainer.appendChild(
-          createBooleanToggle('Nekroz', tumor.necrosis, (value) => {
-            tumor.necrosis = value;
-            render();
-          }),
+          createBooleanToggle('Nekroz', tumor.necrosis, (value) => { tumor.necrosis = value; render(); }),
         );
 
-        const separator = createElement('hr', { className: 'finding-separator' });
-        container.appendChild(separator);
+        container.appendChild(createElement('hr', { className: 'finding-separator' }));
         container.appendChild(findingsContainer);
 
         return container;
@@ -664,71 +571,30 @@
       function createLymphNodeControl(ln, index) {
         const container = createElement('div', { className: 'tumor-focus ' + (index % 2 === 0 ? 'focus-a' : 'focus-b') });
         const header = createElement('div', { className: 'tumor-focus-header' });
-        header.appendChild(
-          createElement('h4', { textContent: `${index + 1}. Lenf Nodu Grubu` }),
-        );
-        const removeBtn = createElement('button', {
-          className: 'danger',
-          innerHTML: '<i class="fa-solid fa-trash-alt"></i>',
-        });
-        removeBtn.addEventListener('click', () => {
-          state.lymphNodes.splice(index, 1);
-          render();
-        });
+        header.appendChild(createElement('h4', { textContent: `${index + 1}. Lenf Nodu Grubu` }));
+        const removeBtn = createElement('button', { className: 'danger', innerHTML: '<i class="fa-solid fa-trash-alt"></i>' });
+        removeBtn.addEventListener('click', () => { state.lymphNodes.splice(index, 1); render(); });
         header.appendChild(removeBtn);
         container.appendChild(header);
 
         const row1 = createElement('div', { className: 'form-row' });
-        const locationInput = createInput(
-          `ln-location-${ln.id}`,
-          'Yerleşim',
-          'text',
-          ln.location,
-        );
-        locationInput.addEventListener('input', (e) => {
-          ln.location = e.target.value;
-          renderReport();
-        });
+        const locationInput = createInput(`ln-location-${ln.id}`, 'Yerleşim', 'text', ln.location);
+        locationInput.addEventListener('input', (e) => { ln.location = e.target.value; renderReport(); });
         row1.appendChild(locationInput);
 
-        const metastaticInput = createInput(
-          `ln-meta-${ln.id}`,
-          'Metastatik',
-          'number',
-          ln.metastatic.toString(),
-        );
+        const metastaticInput = createInput(`ln-meta-${ln.id}`, 'Metastatik', 'number', ln.metastatic.toString());
         metastaticInput.classList.add('small');
-        metastaticInput.addEventListener('input', (e) => {
-          ln.metastatic = Number(e.target.value || 0);
-          renderReport();
-        });
+        metastaticInput.addEventListener('input', (e) => { ln.metastatic = Number(e.target.value || 0); renderReport(); });
         row1.appendChild(metastaticInput);
 
-        const totalInput = createInput(
-          `ln-total-${ln.id}`,
-          'Toplam',
-          'number',
-          ln.total.toString(),
-        );
+        const totalInput = createInput(`ln-total-${ln.id}`, 'Toplam', 'number', ln.total.toString());
         totalInput.classList.add('small');
-        totalInput.addEventListener('input', (e) => {
-          ln.total = Number(e.target.value || 0);
-          renderReport();
-        });
+        totalInput.addEventListener('input', (e) => { ln.total = Number(e.target.value || 0); renderReport(); });
         row1.appendChild(totalInput);
         container.appendChild(row1);
 
         container.appendChild(
-          createBooleanToggle(
-            'Perikapsüler invazyon',
-            ln.pericapsularInvasion,
-            (value) => {
-              ln.pericapsularInvasion = value;
-              render();
-            },
-            'Var',
-            'Yok',
-          ),
+          createBooleanToggle('Perikapsüler invazyon', ln.pericapsularInvasion, (value) => { ln.pericapsularInvasion = value; render(); }, 'Var', 'Yok'),
         );
 
         return container;
@@ -752,32 +618,32 @@
         return field;
       }
 
+      function createTextarea(id, label, value) {
+        const field = createElement('div', { className: 'form-field' });
+        field.appendChild(createElement('label', { textContent: label }));
+        const textarea = document.createElement('textarea');
+        textarea.id = id;
+        textarea.value = value || '';
+        textarea.rows = 3;
+        field.appendChild(textarea);
+        return field;
+      }
+
       function createSelect(id, label, options, selectedValue) {
         const field = createElement('div', { className: 'form-field' });
         field.appendChild(createElement('label', { textContent: label }));
         const select = createElement('select', { id });
         options.forEach((opt) => {
-          const optionEl = createElement('option', {
-            textContent: opt,
-            className: '',
-          });
+          const optionEl = createElement('option', { textContent: opt });
           optionEl.setAttribute('value', opt);
-          if (opt === selectedValue) {
-            optionEl.selected = true;
-          }
+          if (opt === selectedValue) optionEl.selected = true;
           select.appendChild(optionEl);
         });
         field.appendChild(select);
         return field;
       }
 
-      function createBooleanToggle(
-        label,
-        value,
-        onChange,
-        trueText = 'VARDIR',
-        falseText = 'yoktur',
-      ) {
+      function createBooleanToggle(label, value, onChange, trueText = 'VARDIR', falseText = 'yoktur') {
         const container = createElement('div', { className: 'form-field' });
         container.appendChild(createElement('label', { textContent: label }));
         const button = createElement('button', {
@@ -808,9 +674,7 @@
       function createCheckboxGroup(label, options, selectedOptions, onChange) {
         const container = createElement('div', { className: 'form-field' });
         container.appendChild(createElement('label', { textContent: label }));
-        const checkboxesContainer = createElement('div', {
-          className: 'checkbox-group',
-        });
+        const checkboxesContainer = createElement('div', { className: 'checkbox-group' });
 
         options.forEach((option) => {
           const wrapper = createElement('div', { className: 'checkbox-wrapper' });
@@ -824,12 +688,7 @@
           checkbox.addEventListener('change', (e) => {
             const checked = e.target.checked;
             const value = e.target.value;
-            let newSelected;
-            if (checked) {
-              newSelected = [...selectedOptions, value];
-            } else {
-              newSelected = selectedOptions.filter((o) => o !== value);
-            }
+            const newSelected = checked ? [...selectedOptions, value] : selectedOptions.filter((o) => o !== value);
             onChange(newSelected);
           });
 
@@ -853,21 +712,15 @@
       function generateFindingsText(tumor, indent = '') {
         let text = '';
         text += `${indent}Tümörde enkapsülasyon: ${tumor.encapsulation}\n`;
-        text += `${indent}Tiroid dışı invazyon: ${
-          tumor.extrathyroidalExtension ? 'VARDIR' : 'yoktur'
-        }\n`;
+        text += `${indent}Tiroid dışı invazyon: ${tumor.extrathyroidalExtension ? 'VARDIR' : 'yoktur'}\n`;
 
         let lviText = `Lenfatik ve/veya venöz invazyon: ${tumor.lvInvasion}`;
         if (tumor.lvInvasion === 'VARDIR') {
-          lviText += `. Lenfatik invazyon ${
-            tumor.lymphaticInvasion ? 'VARDIR' : 'yoktur'
-          }. Anjioinvazyon ${tumor.angioinvasion ? 'VARDIR' : 'yoktur'}.`;
+          lviText += `. Lenfatik invazyon ${tumor.lymphaticInvasion ? 'VARDIR' : 'yoktur'}. Anjioinvazyon ${tumor.angioinvasion ? 'VARDIR' : 'yoktur'}.`;
         }
         text += `${indent}${lviText}\n`;
 
-        text += `${indent}Perinöral invazyon: ${
-          tumor.perineuralInvasion ? 'VARDIR' : 'yoktur'
-        }\n`;
+        text += `${indent}Perinöral invazyon: ${tumor.perineuralInvasion ? 'VARDIR' : 'yoktur'}\n`;
 
         if (tumor.mitoticActivity && tumor.mitoticActivity !== '0') {
           text += `${indent}Mitotik Oran: ${tumor.mitoticActivity} / 2 mm²\n`;
@@ -881,8 +734,7 @@
 
       function generateReportText() {
         let report = '';
-        const { specimenType, tumors, globalFindings, lymphNodes, backgroundThyroid } =
-          state;
+        const { specimenType, tumors, globalFindings, lymphNodes, backgroundThyroid } = state;
 
         report += `${specimenType}:\n`;
 
@@ -890,15 +742,16 @@
         const mainDiagnosis = getTumorDiagnosisName(maxSize);
         report += `${mainDiagnosis}\n`;
 
+        // Tanı altına serbest not
+        if (state.freeNote && state.freeNote.trim()) {
+          report += `${state.freeNote.trim()}\n`;
+        }
+
         if (tumors.length === 1) {
           const tumor = tumors[0];
-          if (tumor.location) {
-            report += `Tümör ${tumor.location} yerleşimlidir.\n`;
-          }
+          if (tumor.location) report += `Tümör ${tumor.location} yerleşimlidir.\n`;
           report += `Tümör çapı ${tumor.size} mm\n`;
-          if (tumor.subtypes.length > 0) {
-            report += `Tümör ${tumor.subtypes.join(' ve ')} histolojisindedir.\n`;
-          }
+          if (tumor.subtypes.length > 0) report += `Tümör ${tumor.subtypes.join(' ve ')} histolojisindedir.\n`;
           if (tumor.sample) report += `Örnek No: ${tumor.sample}\n`;
           report += '\n' + generateFindingsText(tumor);
         } else {
@@ -917,25 +770,17 @@
         }
 
         report += '\n';
-        report += `Cerrahi sınırlarda tümör: ${
-          globalFindings.surgicalMargins ? 'VARDIR' : 'yoktur'
-        }\n`;
+        report += `Cerrahi sınırlarda tümör: ${globalFindings.surgicalMargins ? 'VARDIR' : 'yoktur'}\n`;
 
         if (lymphNodes.length > 0) {
           report += '\n';
           lymphNodes.forEach((ln) => {
             if (ln.metastatic > 0) {
-              report += `${
-                ln.location ? ln.location + ' komşuluğunda ' : ''
-              }${ln.total} lenf nodunun ${ln.metastatic}'inde metastaz VARDIR (${ln.metastatic}/${ln.total}). `;
+              report += `${ln.location ? ln.location + ' komşuluğunda ' : ''}${ln.total} lenf nodunun ${ln.metastatic}'inde metastaz VARDIR (${ln.metastatic}/${ln.total}). `;
             } else {
-              report += `${
-                ln.location ? ln.location + ' komşuluğunda ' : ''
-              }${ln.total} adet reaktif lenf nodu VARDIR (0/${ln.total}). `;
+              report += `${ln.location ? ln.location + ' komşuluğunda ' : ''}${ln.total} adet reaktif lenf nodu VARDIR (0/${ln.total}). `;
             }
-            report += `Perikapsüler invazyon ${
-              ln.pericapsularInvasion ? 'VARDIR' : 'yoktur'
-            }.\n`;
+            report += `Perikapsüler invazyon ${ln.pericapsularInvasion ? 'VARDIR' : 'yoktur'}.\n`;
           });
         }
 
@@ -962,10 +807,7 @@
           navigator.clipboard.writeText(reportText).then(
             () => {
               copyReportBtn.innerHTML = '<i class="fa-solid fa-check"></i> Kopyalandı!';
-              setTimeout(() => {
-                copyReportBtn.innerHTML =
-                  '<i class="fa-solid fa-copy"></i> Kopyala';
-              }, 2000);
+              setTimeout(() => { copyReportBtn.innerHTML = '<i class="fa-solid fa-copy"></i> Kopyala'; }, 2000);
             },
             (err) => {
               console.error('Rapor kopyalanamadı: ', err);
