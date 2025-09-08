@@ -1,17 +1,18 @@
 <!doctype html>
 <html lang="tr">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Tiroid Papiller Karsinom Rapor Oluşturucu</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
     <style>
       :root{
         --background-color:#f8f9fa; --panel-background:#ffffff; --text-color:#212529;
         --primary-color:#007bff; --primary-hover-color:#0056b3; --border-color:#dee2e6;
         --input-background:#ffffff; --button-background:#f8f9fa; --button-hover-background:#e2e6ea;
-        --danger-color:#dc3545; --danger-hover-color:#c82333; --font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+        --danger-color:#dc3545; --danger-hover-color:#c82333;
         --focus-a:#f6f9ff; --focus-b:#fff7e8;
+        --font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
       }
       *{box-sizing:border-box}
       body{margin:0;background:var(--background-color);color:var(--text-color);font-family:var(--font-family)}
@@ -25,14 +26,14 @@
       #report-container{width:55%;display:flex;flex-direction:column}
       .report-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border-color)}
       .report-header h2{margin:0;font-size:1.2em}
-      #report-preview{flex-grow:1;background:#f1f3f5;color:var(--text-color);border-radius:4px;padding:16px;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,Courier,monospace;font-size:.95em;line-height:1.6;white-space:pre-wrap;word-wrap:break-word;border:1px solid var(--border-color)}
+      #report-preview{flex-grow:1;background:#f1f3f5;border:1px solid var(--border-color);border-radius:4px;padding:16px;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,Courier,monospace;font-size:.95em;line-height:1.6;white-space:pre-wrap}
       .control-group{margin-bottom:24px;padding:16px;border:1px solid var(--border-color);border-radius:8px;background:var(--panel-background)}
       .control-group h3{margin:0 0 16px 0;font-size:1.1em;color:#495057;padding-bottom:10px;border-bottom:1px solid var(--border-color)}
       .form-row{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:12px;align-items:center}
       .form-field{flex:1;min-width:150px;display:flex;flex-direction:column}
       .form-field.small{min-width:100px;flex:.5}
       .form-field label{margin-bottom:6px;font-size:.9em;color:#495057;font-weight:500}
-      input[type='text'],input[type='number'],select,textarea{width:100%;background:var(--input-background);color:var(--text-color);border:1px solid #ced4da;padding:8px 10px;border-radius:4px;font-size:.9em;transition:border-color .2s,box-shadow .2s}
+      input[type="text"],input[type="number"],select,textarea{width:100%;background:var(--input-background);color:var(--text-color);border:1px solid #ced4da;padding:8px 10px;border-radius:4px;font-size:.9em;transition:border-color .2s,box-shadow .2s}
       input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary-color);box-shadow:0 0 0 2px rgba(0,123,255,.25)}
       button{background:var(--button-background);color:var(--text-color);border:1px solid #ced4da;padding:8px 16px;border-radius:4px;cursor:pointer;font-size:14px;transition:background-color .2s,border-color .2s;display:inline-flex;align-items:center;gap:6px}
       button:hover{background:var(--button-hover-background);border-color:#adb5bd}
@@ -43,15 +44,15 @@
       .toggle-buttons{display:flex;flex-wrap:wrap;gap:8px}
       .toggle-btn{background:var(--button-background);border:1px solid #ced4da}
       .toggle-btn.active{background:var(--danger-color);border-color:var(--danger-color);color:#fff}
-      .tumor-focus{border:1px solid #e9ecef;padding:16px;margin-top:16px;border-radius:6px;position:relative}
+      .tumor-focus{border:1px solid #e9ecef;padding:16px;margin-top:16px;border-radius:6px}
       .tumor-focus.focus-a{background:var(--focus-a)} .tumor-focus.focus-b{background:var(--focus-b)}
       .tumor-focus-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
       .tumor-focus-header h4{margin:0;font-size:1.05em}
       .checkbox-group{display:flex;flex-direction:column;gap:8px}
       .checkbox-wrapper{display:flex;align-items:center;gap:8px}
-      .checkbox-wrapper input[type='checkbox']{width:16px;height:16px}
-      .checkbox-wrapper label{margin:0;font-weight:normal;color:var(--text-color)}
-      /* Sticky üst bar ve sekmeler */
+      .checkbox-wrapper input[type="checkbox"]{width:16px;height:16px}
+      .checkbox-wrapper label{margin:0}
+      /* Sticky üst bar */
       .topbar{position:sticky;top:0;z-index:5;background:#f8f9fa;padding:8px 8px 10px;border-bottom:1px solid var(--border-color);margin:-20px -20px 12px -20px}
       .tumor-tabs{display:flex;flex-wrap:wrap;gap:8px}
       .tumor-tab{border:1px solid var(--border-color);padding:6px 10px;border-radius:999px;background:#fff;font-size:12px;cursor:pointer}
@@ -73,9 +74,7 @@
         <div id="report-container" class="panel">
           <div class="report-header">
             <h2>Rapor Önizlemesi</h2>
-            <button id="copy-report-btn" title="Raporu Kopyala">
-              <i class="fa-solid fa-copy"></i> Kopyala
-            </button>
+            <button id="copy-report-btn" title="Raporu Kopyala"><i class="fa-solid fa-copy"></i> Kopyala</button>
           </div>
           <pre id="report-preview"></pre>
         </div>
@@ -83,7 +82,7 @@
     </div>
 
     <script>
-      // --- STATE ---
+      // ------------ STATE ------------
       let state = {
         specimenType: 'Total Tiroidektomi',
         tumors: [{
@@ -104,7 +103,8 @@
         globalFindings: { surgicalMargins: false },
         lymphNodes: [],
         backgroundThyroid: ['Nodüler guatr'],
-        freeNote: ''
+        freeNote: '',
+        activeTumorId: 1
       };
 
       const HISTOLOGIC_SUBTYPES = [
@@ -115,12 +115,12 @@
         'Nodüler guatr','Fokal lenfositik tiroidit','Yaygın lenfositik tiroidit','Hashimoto tiroiditi','Kolloidden zengin'
       ];
 
-      // --- DOM ---
+      // ------------ DOM ------------
       const controlsPanel = document.getElementById('controls-panel');
       const reportPreview = document.getElementById('report-preview');
       const copyReportBtn = document.getElementById('copy-report-btn');
 
-      // --- UTILS ---
+      // ------------ UTILS ------------
       function createElement(tag, opts){
         const el = document.createElement(tag);
         if (opts && 'className' in opts) el.className = opts.className;
@@ -129,22 +129,31 @@
         if (opts && 'id' in opts) el.id = opts.id;
         return el;
       }
-
       function topbarHeight(){
         const tb = document.querySelector('.topbar');
         return tb ? tb.offsetHeight : 0;
       }
-
       function scrollChildToTop(container, child){
         if (!container || !child) return;
         const cTop = container.getBoundingClientRect().top;
         const offset = child.getBoundingClientRect().top - cTop + container.scrollTop - (topbarHeight() + 8);
         container.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
       }
+      // fazla boş satırları regex kullanmadan sadeleştir
+      function collapseTripleNewlines(text){
+        while (text.indexOf('\n\n\n') !== -1) text = text.replace('\n\n\n','\n\n');
+        return text;
+      }
+      // güvenli kaydır + chip vurgula
+      function scrollToTumorIdEnsure(id){
+        const card = document.getElementById('tumor-card-' + id);
+        if (!card) return;
+        setActiveChip(id);
+        scrollChildToTop(controlsPanel, card);
+      }
 
       let scrollListenerAttached = false;
       let scrollRAF = null;
-
       function getNearestTumorIdToTop(){
         const cTop = controlsPanel.getBoundingClientRect().top + topbarHeight() + 8;
         let bestId = state.tumors.length ? state.tumors[0].id : null;
@@ -157,15 +166,14 @@
         });
         return bestId;
       }
-
       function setActiveChip(id){
         const wrap = document.getElementById('tumor-tabs-global');
         if (!wrap) return;
         Array.from(wrap.querySelectorAll('.tumor-tab')).forEach(btn => {
           btn.classList.toggle('active', String(btn.dataset.tid) === String(id));
         });
+        state.activeTumorId = id;
       }
-
       function attachScrollListenerOnce(){
         if (scrollListenerAttached) return;
         scrollListenerAttached = true;
@@ -179,7 +187,7 @@
         });
       }
 
-      // --- CONTROLS RENDER ---
+      // ------------ RENDER CONTROLS ------------
       function renderControls(){
         controlsPanel.innerHTML = '';
 
@@ -187,12 +195,16 @@
         const topbar = createElement('div', { className: 'topbar' });
         const tabsWrap = createElement('div', { className: 'tumor-tabs', id: 'tumor-tabs-global' });
         state.tumors.forEach((t, i) => {
-          const tab = createElement('button', { className: 'tumor-tab', textContent: (i + 1) + '. Tümör' });
+          const tab = createElement('button', {
+            className: 'tumor-tab' + (state.activeTumorId === t.id ? ' active' : ''),
+            textContent: (i + 1) + '. Tümör'
+          });
           tab.dataset.tid = String(t.id);
           tab.addEventListener('click', () => {
+            state.activeTumorId = t.id;
+            setActiveChip(t.id);
             const card = document.getElementById('tumor-card-' + t.id);
             scrollChildToTop(controlsPanel, card);
-            setActiveChip(t.id);
           });
           tabsWrap.appendChild(tab);
         });
@@ -219,20 +231,25 @@
         const addTumorBtn = createElement('button', { className:'primary', innerHTML:'<i class="fa-solid fa-plus"></i> Tümör Odağı Ekle' });
         addTumorBtn.addEventListener('click', () => {
           const newId = Date.now();
-          state.tumors.unshift({
+          // YENİ: sona ekle (3., 4., ... olarak kalsın)
+          state.tumors.push({
             id:newId, location:'Sol lob', size:3, sample:'',
             subtypes:['Klasik papiller karsinom'], encapsulation:'Yoktur',
             extrathyroidalExtension:false, lvInvasion:'yoktur',
             lymphaticInvasion:false, angioinvasion:false,
             perineuralInvasion:false, mitoticActivity:'0', necrosis:false
           });
-          render();
-          const newCard = document.getElementById('tumor-card-' + newId);
-          scrollChildToTop(controlsPanel, newCard);
-          setActiveChip(newId);
+          state.activeTumorId = newId;   // yeni eklenen aktif
+
+          render(); // DOM'u tazele
+
+          // DOM yerleşsin → yeni karta kaydır + chip'i aktif tut
           requestAnimationFrame(() => {
-            const sampleEl = document.getElementById('tumor-sample-' + newId);
-            if (sampleEl) sampleEl.focus();
+            requestAnimationFrame(() => {
+              scrollToTumorIdEnsure(newId);
+              const sampleEl = document.getElementById('tumor-sample-' + newId);
+              if (sampleEl) sampleEl.focus();
+            });
           });
         });
         tumorsGroup.appendChild(addTumorBtn);
@@ -266,9 +283,8 @@
         backgroundGroup.appendChild(backgroundCheckboxes);
         controlsPanel.appendChild(backgroundGroup);
 
-        // Başlangıç aktif sekme
-        const firstActive = getNearestTumorIdToTop();
-        if (firstActive != null) setActiveChip(firstActive);
+        // yalnızca activeTumorId'ye göre chip'i vurgula
+        if (state.activeTumorId != null) setActiveChip(state.activeTumorId);
       }
 
       function createTumorFocusControl(tumor, index){
@@ -283,6 +299,9 @@
         removeBtn.addEventListener('click', () => {
           if (state.tumors.length > 1){
             state.tumors.splice(index, 1);
+            if (!state.tumors.find(t => t.id === state.activeTumorId)) {
+              state.activeTumorId = state.tumors[0].id;
+            }
             render();
           }
         });
@@ -345,7 +364,7 @@
         return container;
       }
 
-      // --- COMPONENTS ---
+      // ------------ COMPONENTS ------------
       function createControlGroup(title){
         const g = createElement('div', { className:'control-group' });
         g.appendChild(createElement('h3', { textContent:title }));
@@ -385,7 +404,7 @@
       function createBooleanToggle(label,value,onChange,trueText='VARDIR',falseText='yoktur'){
         const c = createElement('div', { className:'form-field' });
         c.appendChild(createElement('label', { textContent:label }));
-        const btn = createElement('button', { className:'toggle-btn ' + (value ? 'active' : ''), textContent: value ? trueText : falseText });
+        const btn = createElement('button', { className:'toggle-btn ' + (value ? 'active' : ''), textContent: (value ? trueText : falseText) });
         btn.addEventListener('click', () => onChange(!value));
         c.appendChild(btn);
         return c;
@@ -423,9 +442,10 @@
         return c;
       }
 
-      // --- REPORT ---
+      // ------------ REPORT ------------
       function getTumorDiagnosisName(size){ return size > 10 ? 'Tiroid papiller karsinom' : 'Tiroid papiller mikrokarsinom'; }
-      function generateFindingsText(t, indent=''){
+      function generateFindingsText(t, indent){
+        indent = indent || '';
         let text = '';
         text += indent + 'Tümörde enkapsülasyon: ' + t.encapsulation + '\n';
         text += indent + 'Tiroid dışı invazyon: ' + (t.extrathyroidalExtension ? 'VARDIR' : 'yoktur') + '\n';
@@ -443,24 +463,24 @@
       }
       function generateReportText(){
         let report = '';
-        const { specimenType, tumors, globalFindings, lymphNodes, backgroundThyroid } = state;
-        report += specimenType + ':\n';
-        const maxSize = tumors.length ? Math.max(...tumors.map(t => t.size)) : 0;
+        const s = state;
+        report += s.specimenType + ':\n';
+        const maxSize = s.tumors.length ? Math.max.apply(null, s.tumors.map(t => t.size)) : 0;
         const mainDx = getTumorDiagnosisName(maxSize);
         report += mainDx + '\n';
-        if (state.freeNote && state.freeNote.trim()) report += state.freeNote.trim() + '\n';
+        if (s.freeNote && s.freeNote.trim()) report += s.freeNote.trim() + '\n';
 
-        if (tumors.length === 1){
-          const t = tumors[0];
+        if (s.tumors.length === 1){
+          const t = s.tumors[0];
           if (t.location) report += 'Tümör ' + t.location + ' yerleşimlidir.\n';
           report += 'Tümör çapı ' + t.size + ' mm\n';
           if (t.subtypes.length) report += 'Tümör ' + t.subtypes.join(' ve ') + ' histolojisindedir.\n';
           if (t.sample) report += 'Örnek No: ' + t.sample + '\n';
           report += '\n' + generateFindingsText(t);
         } else {
-          report += 'Tümör Odaklılığı: ' + tumors.length + ' odaklıdır. Multifokal tümör VARDIR.\n\n';
+          report += 'Tümör Odaklılığı: ' + s.tumors.length + ' odaklıdır. Multifokal tümör VARDIR.\n\n';
           report += 'Tümör odakları:\n';
-          tumors.forEach((t,i) => {
+          s.tumors.forEach((t,i) => {
             const dx = getTumorDiagnosisName(t.size);
             report += (i+1) + '. Tümör: ' + dx + '\n';
             report += '- Yerleşim: ' + t.location + '\n';
@@ -471,10 +491,10 @@
             report += '\n';
           });
         }
-        report += '\nCerrahi sınırlarda tümör: ' + (globalFindings.surgicalMargins ? 'VARDIR' : 'yoktur') + '\n';
-        if (lymphNodes.length){
+        report += '\nCerrahi sınırlarda tümör: ' + (s.globalFindings.surgicalMargins ? 'VARDIR' : 'yoktur') + '\n';
+        if (s.lymphNodes.length){
           report += '\n';
-          lymphNodes.forEach(ln => {
+          s.lymphNodes.forEach(ln => {
             if (ln.metastatic > 0){
               report += (ln.location ? ln.location + ' komşuluğunda ' : '') + ln.total + ' lenf nodunun ' + ln.metastatic + '\'inde metastaz VARDIR (' + ln.metastatic + '/' + ln.total + '). ';
             } else {
@@ -483,11 +503,11 @@
             report += 'Perikapsüler invazyon ' + (ln.pericapsularInvasion ? 'VARDIR' : 'yoktur') + '.\n';
           });
         }
-        if (backgroundThyroid.length) report += '\nTümör dışı tiroid: ' + backgroundThyroid.join(', ') + '\n';
-        return report.trim().replace(/\n\n\n/g, '\n\n');
+        if (s.backgroundThyroid.length) report += '\nTümör dışı tiroid: ' + s.backgroundThyroid.join(', ') + '\n';
+        return collapseTripleNewlines(report.trim());
       }
 
-      // --- MAIN ---
+      // ------------ MAIN ------------
       function renderReport(){ reportPreview.textContent = generateReportText(); }
       function render(){ renderControls(); attachScrollListenerOnce(); renderReport(); }
 
@@ -496,12 +516,11 @@
         if (!txt) return;
         navigator.clipboard.writeText(txt).then(() => {
           copyReportBtn.innerHTML = '<i class="fa-solid fa-check"></i> Kopyalandı!';
-          setTimeout(() => { copyReportBtn.innerHTML = '<i class="fa-solid fa-copy"></i> Kopyala'; }, 2000);
+          setTimeout(() => { copyReportBtn.innerHTML = '<i class="fa-solid fa-copy"></i> Kopyala'; }, 1600);
         }, () => { alert('Rapor kopyalanamadı.'); });
       }
       copyReportBtn.addEventListener('click', copyReport);
 
-      // İlk çizim
       render();
     </script>
   </body>
