@@ -427,7 +427,15 @@
 
         container.appendChild(row1);
 
-        container.appendChild(createBooleanToggle('Perikapsüler invazyon', ln.pericapsularInvasion, (v)=>{ ln.pericapsularInvasion = v; renderReport(); }, 'Var', 'Yok'));
+        // Sağlam yaklaşım: toggle kendi UI'sını anında günceller + state'i set eder; ardından tüm UI senkron kalsın diye render()
+        container.appendChild(
+          createBooleanToggle(
+            'Perikapsüler invazyon',
+            ln.pericapsularInvasion,
+            (v)=>{ ln.pericapsularInvasion = v; render(); },
+            'Var', 'Yok'
+          )
+        );
 
         return container;
       }
@@ -469,11 +477,17 @@
         f.appendChild(sel);
         return f;
       }
+      // *** SAĞLAM YAKLAŞIM ***
       function createBooleanToggle(label,value,onChange,trueText='VARDIR',falseText='yoktur'){
         const c = createElement('div', { className:'form-field' });
         c.appendChild(createElement('label', { textContent:label }));
         const btn = createElement('button', { className:'toggle-btn ' + (value ? 'active' : ''), textContent: (value ? trueText : falseText) });
-        btn.addEventListener('click', () => onChange(!value));
+        btn.addEventListener('click', () => {
+          value = !value;                              // lokal state
+          btn.classList.toggle('active', value);       // UI anında
+          btn.textContent = value ? trueText : falseText;
+          onChange(value);                              // global state
+        });
         c.appendChild(btn);
         return c;
       }
@@ -565,7 +579,7 @@
           report += '\nLenf nodları:\n';
           s.lymphNodes.forEach(ln => {
             if (ln.metastatic > 0){
-              report += (ln.location ? ln.location + ' komşuluğunda ' : '') + ln.total + ' lenf nodunun ' + ln.metastatic + '\'inde metastaz VARDIR (' + ln.metastatic + '/' + ln.total + '). ';
+              report += (ln.location ? ln.location + ' komşuluğunda ' : '') + ln.total + ' lenf nodunun ' + ln.metastatic + "'inde metastaz VARDIR (" + ln.metastatic + '/' + ln.total + '). ';
             } else {
               report += (ln.location ? ln.location + ' komşuluğunda ' : '') + ln.total + ' adet reaktif lenf nodu vardır (0/' + ln.total + '). ';
             }
