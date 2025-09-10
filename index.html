@@ -579,9 +579,9 @@
           report += '\nLenf nodları:\n';
           s.lymphNodes.forEach(ln => {
             if (ln.metastatic > 0){
-              report += (ln.location ? ln.location + ' komşuluğunda ' : '') + ln.total + ' lenf nodunun ' + ln.metastatic + "'inde metastaz VARDIR (" + ln.metastatic + '/' + ln.total + '). ';
+              report += (ln.location ? ln.location + '  ' : '') + ln.total + ' lenf nodunun ' + ln.metastatic + "'inde metastaz VARDIR (" + ln.metastatic + '/' + ln.total + '). ';
             } else {
-              report += (ln.location ? ln.location + ' komşuluğunda ' : '') + ln.total + ' adet reaktif lenf nodu vardır (0/' + ln.total + '). ';
+              report += (ln.location ? ln.location + '  ' : '') + ln.total + ' adet reaktif lenf nodu vardır (0/' + ln.total + '). ';
             }
             report += 'Perikapsüler invazyon ' + (ln.pericapsularInvasion ? 'VARDIR' : 'yoktur') + '.\n';
           });
