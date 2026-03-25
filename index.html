@@ -4,7 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Tiroid Papiller Karsinom Rapor Oluşturucu</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <script type="text/javascript" nonce="3242aba12d8141a8bb576b8a1a0" src="//local.adguard.org?ts=1774423177556&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_00000000023c720a87a5dea79ea81010%26ts%3D492895%26p%3Dfs%26cid%3D1%26sig%3De57f91efc22395711e4f681b40c05773cc92f1b0c7dc945ab9a9b3469bdaa975%26v%3D0&amp;app=comet.exe&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-dnt"></script><script type="text/javascript" nonce="3242aba12d8141a8bb576b8a1a0" src="//local.adguard.org?ts=1774423177556&amp;name=AdGuard%20Extra&amp;name=AdGuard%20Popup%20Blocker&amp;type=user-script"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 
     <style>
       :root{
@@ -301,7 +301,7 @@
           subtypes: ['Klasik papiller karsinom'],
           encapsulation: 'Yoktur',
 
-          // Nekrozdan sonra 3 checkbox (hepsi seçilebilir)
+          // Nekrozdan sonra kapsül / tiroid dışı invazyon seçenekleri
           capsuleEtOptions: ['Tiroid dışı invazyon yoktur'],
 
           // Strap kas (sadece invazyon varsa görünür) - default seçili değil
@@ -317,7 +317,8 @@
 
           // Cerrahi sınırlar (HER TÜMÖR İÇİN)
           includeMarginsLine: false,     // rapora eklensin mi?
-          marginsTumorPresent: false     // false: yoktur (default), true: vardır (kötü)
+          marginsTumorPresent: false,    // false: yoktur (default), true: vardır (kötü)
+          marginsNote: ''                // tümör cerrahi sınıra ulaşıyorsa ek açıklama
         }],
         lymphNodes: [],
 
@@ -343,8 +344,7 @@
 
       const STRAP_OPTIONS = [
         'Strap kas invazyonu yoktur',
-        'Strap kas invazyonu vardır',
-        'Strap kas görülmemiştir'
+        'Strap kas invazyonu VARDIR'
       ];
 
       // ------------ DOM ------------
@@ -497,7 +497,8 @@
             necrosis:false,
 
             includeMarginsLine:false,
-            marginsTumorPresent:false
+            marginsTumorPresent:false,
+            marginsNote:''
           });
           state.activeTumorId = newId;
           render();
@@ -591,7 +592,7 @@
         findingsContainer.appendChild(
           createToggleButtons(
             'Enkapsülasyon',
-            ['Yoktur','VARDIR','Kısmen VARDIR'],
+            ['Yoktur','vardır','Kısmen vardır'],
             tumor.encapsulation,
             (val) => { tumor.encapsulation = val; renderReport(); }
           )
@@ -599,14 +600,14 @@
 
         const lviButtons = createToggleButtons(
           'Lenfatik ve/veya venöz invazyon',
-          ['yoktur','VARDIR','kuşkulu VARDIR'],
+          ['yoktur','VARDIR','Kuşkulu VARDIR'],
           tumor.lvInvasion,
           (val) => {
             tumor.lvInvasion = val;
             if (val !== 'VARDIR'){ tumor.lymphaticInvasion = false; tumor.angioinvasion = false; }
             render();
           },
-          { badOptions: ['VARDIR','kuşkulu VARDIR'] }
+          { badOptions: ['VARDIR','Kuşkulu VARDIR'] }
         );
         findingsContainer.appendChild(lviButtons);
 
@@ -636,7 +637,7 @@
             }
           )
         );
-        findingsContainer.appendChild(createElement('div', { className:'hint-small', textContent:'Not: Üç seçenek aynı anda seçilebilir. Varsayılan “Tiroid dışı invazyon yoktur”.' }));
+        findingsContainer.appendChild(createElement('div', { className:'hint-small', textContent:'Not: “Tiroid dışı invazyon vardır” ve “Tiroid dışı invazyon yoktur” birlikte seçilemez. Varsayılan “Tiroid dışı invazyon yoktur”.' }));
 
         // Strap kas: sadece invazyon varsa
         if (tumor.capsuleEtOptions.includes('Tiroid dışı invazyon vardır')) {
@@ -656,7 +657,7 @@
           createBooleanToggle(
             'Cerrahi sınırlar satırını rapora ekle',
             tumor.includeMarginsLine,
-            (v)=>{ tumor.includeMarginsLine = v; render(); },
+            (v)=>{ tumor.includeMarginsLine = v; if (!v) { tumor.marginsTumorPresent = false; tumor.marginsNote = ''; } render(); },
             'Eklensin',
             'Eklenmesin',
             { badWhenTrue:false }
@@ -667,15 +668,25 @@
           findingsContainer.appendChild(
             createToggleButtons(
               'Cerrahi sınırlar',
-              ['Cerrahi sınırlarda tümör yoktur','Cerrahi sınırlarda tümör vardır'],
-              tumor.marginsTumorPresent ? 'Cerrahi sınırlarda tümör vardır' : 'Cerrahi sınırlarda tümör yoktur',
+              ['Cerrahi sınırlarda tümör yoktur','Cerrahi sınırlarda tümör VARDIR'],
+              tumor.marginsTumorPresent ? 'Cerrahi sınırlarda tümör VARDIR' : 'Cerrahi sınırlarda tümör yoktur',
               (val)=>{
-                tumor.marginsTumorPresent = (val === 'Cerrahi sınırlarda tümör vardır');
-                renderReport();
+                tumor.marginsTumorPresent = (val === 'Cerrahi sınırlarda tümör VARDIR');
+                if (!tumor.marginsTumorPresent) tumor.marginsNote = '';
+                render();
               },
-              { badOptions: ['Cerrahi sınırlarda tümör vardır'] }
+              { badOptions: ['Cerrahi sınırlarda tümör VARDIR'] }
             )
           );
+
+          if (tumor.marginsTumorPresent){
+            const marginsNoteField = createTextarea('tumor-margins-note-' + tumor.id, 'Cerrahi sınır ek açıklama', tumor.marginsNote || '');
+            marginsNoteField.querySelector('textarea').addEventListener('input', e => {
+              tumor.marginsNote = e.target.value;
+              renderReport();
+            });
+            findingsContainer.appendChild(marginsNoteField);
+          }
         }
 
         container.appendChild(document.createElement('hr'));
@@ -857,8 +868,21 @@
             const cur = selectedGetter() || [];
             const val = e.target.value;
             let next;
-            if (e.target.checked) next = cur.includes(val) ? cur : [...cur, val];
-            else next = cur.filter(x => x !== val);
+
+            if (e.target.checked) {
+              next = cur.includes(val) ? [...cur] : [...cur, val];
+
+              if (val === 'Tiroid dışı invazyon vardır') {
+                next = next.filter(x => x !== 'Tiroid dışı invazyon yoktur');
+              }
+              if (val === 'Tiroid dışı invazyon yoktur') {
+                next = next.filter(x => x !== 'Tiroid dışı invazyon vardır');
+              }
+            } else {
+              next = cur.filter(x => x !== val);
+            }
+
+            if (!next.length) next = ['Tiroid dışı invazyon yoktur'];
             onChange(next);
           });
 
@@ -874,43 +898,54 @@
       function getTumorDiagnosisName(size){ return size > 10 ? 'Tiroid papiller karsinom' : 'Tiroid papiller mikrokarsinom'; }
 
       function normalizeEncapsulation(enc){
-        if (enc === 'VARDIR') return 'vardır';
-        if (enc === 'Kısmen VARDIR') return 'vardır (kısmen)';
+        if (enc === 'vardır') return 'vardır';
+        if (enc === 'Kısmen vardır') return 'vardır (kısmen)';
         return 'yoktur';
+      }
+
+      function sentence(value){
+        if (!value) return '';
+        const v = String(value).trim();
+        if (!v) return '';
+        return /[.!?]$/.test(v) ? v : v + '.';
       }
 
       function generateFindingsText(t, indent){
         indent = indent || '';
         let text = '';
 
-        text += indent + 'Tümörde enkapsülasyon: ' + normalizeEncapsulation(t.encapsulation) + '\n';
+        text += indent + sentence('Tümörde enkapsülasyon ' + normalizeEncapsulation(t.encapsulation)) + '\n';
 
-        let lvi = 'Lenfatik ve/veya venöz invazyon: ' + t.lvInvasion;
+        let lvi = 'Lenfatik ve/veya venöz invazyon ' + t.lvInvasion;
         if (t.lvInvasion === 'VARDIR'){
           lvi += '. Lenfatik invazyon ' + (t.lymphaticInvasion ? 'VARDIR' : 'yoktur') +
-                 '. Anjioinvazyon ' + (t.angioinvasion ? 'VARDIR' : 'yoktur') + '.';
+                 '. Anjioinvazyon ' + (t.angioinvasion ? 'VARDIR' : 'yoktur');
         }
-        text += indent + lvi + '\n';
+        text += indent + sentence(lvi) + '\n';
 
-        text += indent + 'Perinöral invazyon: ' + (t.perineuralInvasion ? 'VARDIR' : 'yoktur') + '\n';
+        text += indent + sentence('Perinöral invazyon ' + (t.perineuralInvasion ? 'VARDIR' : 'yoktur')) + '\n';
 
-        if (t.mitoticActivity && t.mitoticActivity !== '0') text += indent + 'Mitotik Oran: ' + t.mitoticActivity + ' / 2 mm²\n';
-        else text += indent + 'Mitotik aktivite: yoktur\n';
+        if (t.mitoticActivity && t.mitoticActivity !== '0') text += indent + sentence('Mitotik aktivite 2 mm² alanda ' + t.mitoticActivity + ' olarak izlenmiştir') + '\n';
+        else text += indent + sentence('Mitotik aktivite yoktur') + '\n';
 
-        text += indent + 'Nekroz: ' + (t.necrosis ? 'izlendi' : 'yoktur') + '\n';
+        text += indent + sentence('Nekroz ' + (t.necrosis ? 'izlenmiştir' : 'yoktur')) + '\n';
 
         const opts = (t.capsuleEtOptions && t.capsuleEtOptions.length) ? t.capsuleEtOptions : ['Tiroid dışı invazyon yoktur'];
-        text += indent + opts.join(', ') + '\n';
+        opts.forEach(opt => {
+          text += indent + sentence(opt) + '\n';
+        });
 
         if (opts.includes('Tiroid dışı invazyon vardır')){
           if (t.strapMuscle && t.strapMuscle.trim()){
-            text += indent + t.strapMuscle + '\n';
+            text += indent + sentence(t.strapMuscle.replace('vardır', 'VARDIR')) + '\n';
           }
         }
 
-        // Cerrahi sınırlar satırı: sadece includeMarginsLine true ise
         if (t.includeMarginsLine){
-          text += indent + (t.marginsTumorPresent ? 'Cerrahi sınırlarda tümör vardır.' : 'Cerrahi sınırlarda tümör yoktur.') + '\n';
+          text += indent + sentence(t.marginsTumorPresent ? 'Cerrahi sınırlarda tümör VARDIR' : 'Cerrahi sınırlarda tümör yoktur') + '\n';
+          if (t.marginsTumorPresent && t.marginsNote && t.marginsNote.trim()) {
+            text += indent + sentence('Cerrahi sınır açıklaması: ' + t.marginsNote.trim()) + '\n';
+          }
         }
 
         return text;
@@ -922,26 +957,26 @@
 
         report += s.specimenType + ':\n';
         const maxSize = s.tumors.length ? Math.max.apply(null, s.tumors.map(t => t.size)) : 0;
-        report += getTumorDiagnosisName(maxSize) + '\n';
-        if (s.freeNote && s.freeNote.trim()) report += s.freeNote.trim() + '\n';
+        report += sentence(getTumorDiagnosisName(maxSize)) + '\n';
+        if (s.freeNote && s.freeNote.trim()) report += sentence(s.freeNote.trim()) + '\n';
 
         if (s.tumors.length === 1){
           const t = s.tumors[0];
-          if (t.location) report += 'Tümör ' + t.location + ' yerleşimlidir.\n';
-          report += 'Tümör çapı ' + t.size + ' mm\n';
-          if (t.subtypes.length) report += 'Tümör ' + t.subtypes.join(' ve ') + ' histolojisindedir.\n';
-          if (t.sample) report += 'Örnek No: ' + t.sample + '\n';
+          if (t.location) report += sentence('Tümör ' + t.location + ' yerleşimlidir') + '\n';
+          report += sentence("Tümör çapı " + t.size + " mm'dir") + '\n';
+          if (t.subtypes.length) report += sentence('Tümör ' + t.subtypes.join(' ve ') + ' histolojisindedir') + '\n';
+          if (t.sample) report += sentence('Örnek No: ' + t.sample) + '\n';
           report += '\n' + generateFindingsText(t);
         } else if (s.tumors.length > 1){
-          report += 'Tümör Odaklılığı: ' + s.tumors.length + ' odaklıdır. Multifokal tümör VARDIR.\n\n';
+          report += sentence('Tümör odaklılığı ' + s.tumors.length + ' odaklıdır. Multifokal tümör VARDIR') + '\n\n';
           report += 'Tümör odakları:\n';
           s.tumors.forEach((t,i) => {
             const dx = getTumorDiagnosisName(t.size);
             report += (i+1) + '. Tümör: ' + dx + '\n';
-            report += '- Yerleşim: ' + t.location + '\n';
-            report += '- Çap: ' + t.size + ' mm\n';
-            report += '- Histoloji: ' + t.subtypes.join(' ve ') + '\n';
-            if (t.sample) report += '- Örnek No: ' + t.sample + '\n';
+            if (t.location) report += '  ' + sentence('Yerleşim: ' + t.location) + '\n';
+            report += '  ' + sentence('Çap: ' + t.size + ' mm') + '\n';
+            if (t.subtypes.length) report += '  ' + sentence('Histoloji: ' + t.subtypes.join(' ve ')) + '\n';
+            if (t.sample) report += '  ' + sentence('Örnek No: ' + t.sample) + '\n';
             report += generateFindingsText(t, '  ');
             report += '\n';
           });
@@ -952,22 +987,22 @@
           s.lymphNodes.forEach(ln => {
             const total = Number(ln.total || 0);
             const meta = Number(ln.metastatic || 0);
+            const locPrefix = ln.location ? ln.location + ' yerleşiminden ' : '';
             if (meta > 0){
-              report += (ln.location ? ln.location + '  ' : '') + total + ' lenf nodunun ' + meta + "'inde metastaz VARDIR (" + meta + '/' + total + '). ';
-              report += 'Perikapsüler invazyon ' + (ln.pericapsularInvasion ? 'VARDIR' : 'yoktur') + '.\n';
+              report += sentence(locPrefix + total + ' lenf nodunun ' + meta + "'inde metastaz VARDIR (" + meta + '/' + total + ')') + ' ';
+              report += sentence('Perikapsüler invazyon ' + (ln.pericapsularInvasion ? 'VARDIR' : 'yoktur')) + '\n';
             } else {
-              report += (ln.location ? ln.location + '  ' : '') + total + ' adet reaktif lenf nodu vardır (0/' + total + ').\n';
+              report += sentence(locPrefix + total + ' lenf nodu izlenmiştir. Metastaz yoktur (0/' + total + ')') + '\n';
             }
           });
         }
 
         if (s.backgroundThyroid.length){
-          report += '\nTümör dışı tiroid: ' + s.backgroundThyroid.join(', ') + '\n';
+          report += '\n' + sentence('Tümör dışı tiroid parankiminde ' + s.backgroundThyroid.join(', ') + ' izlenmiştir') + '\n';
         }
 
         return collapseTripleNewlines(report.trim());
       }
-
       // ------------ MAIN ------------
       function renderReport(){ reportPreview.textContent = generateReportText(); }
 
