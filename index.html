@@ -4,7 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Tiroid Papiller Karsinom Rapor Oluşturucu</title>
-    <script type="text/javascript" nonce="3242aba12d8141a8bb576b8a1a0" src="//local.adguard.org?ts=1774423177556&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_00000000023c720a87a5dea79ea81010%26ts%3D492895%26p%3Dfs%26cid%3D1%26sig%3De57f91efc22395711e4f681b40c05773cc92f1b0c7dc945ab9a9b3469bdaa975%26v%3D0&amp;app=comet.exe&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-dnt"></script><script type="text/javascript" nonce="3242aba12d8141a8bb576b8a1a0" src="//local.adguard.org?ts=1774423177556&amp;name=AdGuard%20Extra&amp;name=AdGuard%20Popup%20Blocker&amp;type=user-script"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <script type="text/javascript" nonce="3242aba12d8141a8bb576b8a1a0" src="//local.adguard.org?ts=1774423177556&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_000000001d0071f484bb9804c4295966%26ts%3D492895%26p%3Dfs%26cid%3D1%26sig%3D780acaba55fba3aef758ead0b73856d6b848576400874083a0ebf58720b7a6b9%26v%3D0&amp;app=comet.exe&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-dnt"></script><script type="text/javascript" nonce="3242aba12d8141a8bb576b8a1a0" src="//local.adguard.org?ts=1774423177556&amp;name=AdGuard%20Extra&amp;name=AdGuard%20Popup%20Blocker&amp;type=user-script"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 
     <style>
       :root{
@@ -810,11 +810,17 @@
         const c = createElement('div', { className:'form-field' });
         c.appendChild(createElement('label', { textContent:label }));
         const g = createElement('div', { className:'toggle-buttons' });
+        const buttons = [];
         options.forEach(opt => {
           const b = createElement('button', { className:'toggle-btn', textContent:opt });
           if (bad.has(opt)) b.classList.add('bad');
           b.classList.toggle('active', value === opt);
-          b.addEventListener('click', () => onChange(opt));
+          b.addEventListener('click', () => {
+            buttons.forEach(btn => btn.classList.remove('active'));
+            b.classList.add('active');
+            onChange(opt);
+          });
+          buttons.push(b);
           g.appendChild(b);
         });
         c.appendChild(g);
