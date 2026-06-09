@@ -632,9 +632,10 @@
             () => tumor.capsuleEtOptions,
             (sel) => {
               tumor.capsuleEtOptions = sel.length ? sel : ['Tiroid dışı invazyon yoktur'];
-              if (!tumor.capsuleEtOptions.includes('Tiroid dışı invazyon vardır')) tumor.strapMuscle = '';
+              syncTumorDerivedFields(tumor);
               render();
-            }
+            },
+            { idPrefix: 'tumor-capsule-et-' + tumor.id }
           )
         );
         findingsContainer.appendChild(createElement('div', { className:'hint-small', textContent:'Not: “Tiroid dışı invazyon vardır” ve “Tiroid dışı invazyon yoktur” birlikte seçilemez. Varsayılan “Tiroid dışı invazyon yoktur”.' }));
@@ -646,8 +647,8 @@
               'Strap kas',
               STRAP_OPTIONS,
               tumor.strapMuscle || '',
-              (val)=>{ tumor.strapMuscle = val; renderReport(); },
-              { badOptions: ['Strap kas invazyonu vardır'] }
+              (val)=>{ tumor.strapMuscle = val; syncTumorDerivedFields(tumor); render(); },
+              { badOptions: ['Strap kas invazyonu VARDIR'] }
             )
           );
         }
@@ -657,7 +658,12 @@
           createBooleanToggle(
             'Cerrahi sınırlar satırını rapora ekle',
             tumor.includeMarginsLine,
-            (v)=>{ tumor.includeMarginsLine = v; if (!v) { tumor.marginsTumorPresent = false; tumor.marginsNote = ''; } render(); },
+            (v)=>{
+              tumor.includeMarginsLine = v;
+              if (!v) { tumor.marginsTumorPresent = false; tumor.marginsNote = ''; }
+              syncTumorDerivedFields(tumor);
+              render();
+            },
             'Eklensin',
             'Eklenmesin',
             { badWhenTrue:false }
@@ -857,7 +863,8 @@
         return c;
       }
 
-      function createInlineCheckboxGroup(label, options, selectedGetter, onChange){
+      function createInlineCheckboxGroup(label, options, selectedGetter, onChange, opts){
+        opts = opts || {};
         const c = createElement('div', { className:'form-field' });
         c.appendChild(createElement('label', { textContent:label }));
         const box = createElement('div', { className:'checkbox-group' });
@@ -867,7 +874,8 @@
         options.forEach((opt, idx) => {
           const wrap = createElement('div', { className:'checkbox-wrapper' });
           const cb = document.createElement('input'); cb.type='checkbox';
-          const safeId = 'inline-cb-' + label.replace(/[^a-zA-Z0-9]/g,'-') + '-' + idx;
+          const safeBase = opts.idPrefix || label;
+          const safeId = 'inline-cb-' + safeBase.replace(/[^a-zA-Z0-9]/g,'-') + '-' + idx;
           cb.id = safeId; cb.value = opt; cb.checked = selected.includes(opt);
 
           cb.addEventListener('change', e => {
@@ -916,6 +924,30 @@
         return /[.!?]$/.test(v) ? v : v + '.';
       }
 
+      function hasEtOrCapsuleAdhesion(t){
+        const opts = (t.capsuleEtOptions && t.capsuleEtOptions.length) ? t.capsuleEtOptions : [];
+        return opts.includes('Tiroid dışı invazyon vardır') || opts.includes('Tiroid kapsülüne yapışıktır');
+      }
+
+      function requiresMarginsLine(t){
+        return hasEtOrCapsuleAdhesion(t) || !!(t.strapMuscle && t.strapMuscle.trim());
+      }
+
+      function syncTumorDerivedFields(t){
+        if (!t.capsuleEtOptions || !t.capsuleEtOptions.length) t.capsuleEtOptions = ['Tiroid dışı invazyon yoktur'];
+
+        // Tiroid dışı invazyon yoksa strap kas alanı ilgili tümör için temizlenir.
+        if (!t.capsuleEtOptions.includes('Tiroid dışı invazyon vardır')) t.strapMuscle = '';
+
+        // Kural: strap kas durumu, tiroid dışı invazyon veya kapsüle yapışıklık varsa
+        // cerrahi sınır satırı aynı tümör odağına otomatik eklenir.
+        if (requiresMarginsLine(t)) t.includeMarginsLine = true;
+      }
+
+      function syncAllTumorsDerivedFields(){
+        state.tumors.forEach(syncTumorDerivedFields);
+      }
+
       function generateFindingsText(t, indent){
         indent = indent || '';
         let text = '';
@@ -958,6 +990,7 @@
       }
 
       function generateReportText(){
+        syncAllTumorsDerivedFields();
         let report = '';
         const s = state;
 
@@ -1010,7 +1043,10 @@
         return collapseTripleNewlines(report.trim());
       }
       // ------------ MAIN ------------
-      function renderReport(){ reportPreview.textContent = generateReportText(); }
+      function renderReport(){
+        syncAllTumorsDerivedFields();
+        reportPreview.textContent = generateReportText();
+      }
 
       function render(){
         renderChips();
