@@ -304,7 +304,7 @@
           // Nekrozdan sonra kapsül / tiroid dışı invazyon seçenekleri
           capsuleEtOptions: ['Tiroid dışı invazyon yoktur'],
 
-          // Strap kas (sadece invazyon varsa görünür) - default seçili değil
+          //  (sadece invazyon varsa görünür) - default seçili değil
           strapMuscle: '',
 
           // LVI vs
@@ -343,8 +343,8 @@
       ];
 
       const STRAP_OPTIONS = [
-        'Strap kas invazyonu yoktur',
-        'Strap kas invazyonu VARDIR'
+        ' invazyonu yoktur',
+        ' invazyonu VARDIR'
       ];
 
       // ------------ DOM ------------
@@ -640,15 +640,15 @@
         );
         findingsContainer.appendChild(createElement('div', { className:'hint-small', textContent:'Not: “Tiroid dışı invazyon vardır” ve “Tiroid dışı invazyon yoktur” birlikte seçilemez. Varsayılan “Tiroid dışı invazyon yoktur”.' }));
 
-        // Strap kas: sadece invazyon varsa
+        // : sadece invazyon varsa
         if (tumor.capsuleEtOptions.includes('Tiroid dışı invazyon vardır')) {
           findingsContainer.appendChild(
             createToggleButtons(
-              'Strap kas',
+              '',
               STRAP_OPTIONS,
               tumor.strapMuscle || '',
               (val)=>{ tumor.strapMuscle = val; syncTumorDerivedFields(tumor); render(); },
-              { badOptions: ['Strap kas invazyonu VARDIR'] }
+              { badOptions: [' invazyonu VARDIR'] }
             )
           );
         }
@@ -936,10 +936,10 @@
       function syncTumorDerivedFields(t){
         if (!t.capsuleEtOptions || !t.capsuleEtOptions.length) t.capsuleEtOptions = ['Tiroid dışı invazyon yoktur'];
 
-        // Tiroid dışı invazyon yoksa strap kas alanı ilgili tümör için temizlenir.
+        // Tiroid dışı invazyon yoksa Çizgili kas alanı ilgili tümör için temizlenir.
         if (!t.capsuleEtOptions.includes('Tiroid dışı invazyon vardır')) t.strapMuscle = '';
 
-        // Kural: strap kas durumu, tiroid dışı invazyon veya kapsüle yapışıklık varsa
+        // Kural: Çizgili kas durumu, tiroid dışı invazyon veya kapsüle yapışıklık varsa
         // cerrahi sınır satırı aynı tümör odağına otomatik eklenir.
         if (requiresMarginsLine(t)) t.includeMarginsLine = true;
       }
