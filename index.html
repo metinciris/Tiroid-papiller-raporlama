@@ -343,8 +343,8 @@
       ];
 
       const STRAP_OPTIONS = [
-        ' invazyonu yoktur',
-        ' invazyonu VARDIR'
+        'Çizgili kas invazyonu yoktur',
+        'Çizgili kas invazyonu VARDIR'
       ];
 
       // ------------ DOM ------------
@@ -648,7 +648,7 @@
               STRAP_OPTIONS,
               tumor.strapMuscle || '',
               (val)=>{ tumor.strapMuscle = val; syncTumorDerivedFields(tumor); render(); },
-              { badOptions: [' invazyonu VARDIR'] }
+              { badOptions: ['Çizgili kas invazyonu VARDIR'] }
             )
           );
         }
@@ -975,7 +975,11 @@
 
         if (opts.includes('Tiroid dışı invazyon vardır')){
           if (t.strapMuscle && t.strapMuscle.trim()){
-            text += indent + sentence(t.strapMuscle.replace('vardır', 'VARDIR')) + '\n';
+            
+            let strapText = String(t.strapMuscle).trim();
+            if (strapText === 'invazyonu yoktur') strapText = 'Çizgili kas invazyonu yoktur';
+            if (strapText === 'invazyonu VARDIR') strapText = 'Çizgili kas invazyonu VARDIR';
+            text += indent + sentence(strapText.replace('vardır', 'VARDIR')) + '\n';
           }
         }
 
