@@ -300,7 +300,7 @@
         tumors: [{
           id: 1,
           location: '',
-          size: 5,
+          size: '',
           sample: '',
           subtypes: ['Klasik papiller karsinom'],
           encapsulation: 'Yoktur',
@@ -340,6 +340,11 @@
         'Nodüler guatr','Fokal lenfositik tiroidit','Yaygın lenfositik tiroidit','Hashimoto tiroiditi','Kolloidden zengin'
       ];
 
+      const TUMOR_LOCATION_EXAMPLES = [
+        'Sağ lob', 'Sol lob', 'İstmus', 'Sağ lob üst pol', 'Sağ lob orta kesim', 'Sağ lob alt pol',
+        'Sol lob üst pol', 'Sol lob orta kesim', 'Sol lob alt pol', 'İstmus sağ lateral', 'İstmus sol lateral'
+      ];
+
       const CAPSULE_ET_OPTIONS = [
         'Tiroid kapsülüne yapışıktır',
         'Tiroid dışı invazyon vardır',
@@ -366,6 +371,20 @@
         if (opts && 'innerHTML' in opts) el.innerHTML = opts.innerHTML;
         if (opts && 'id' in opts) el.id = opts.id;
         return el;
+      }
+
+      function ensureDatalist(id, options){
+        let dl = document.getElementById(id);
+        if (dl) return dl;
+        dl = document.createElement('datalist');
+        dl.id = id;
+        options.forEach(opt => {
+          const o = document.createElement('option');
+          o.value = opt;
+          dl.appendChild(o);
+        });
+        document.body.appendChild(dl);
+        return dl;
       }
       function topbarHeight(){
         const tb = document.getElementById('topbar-global');
@@ -487,7 +506,7 @@
           state.tumors.push({
             id:newId,
             location:'',
-            size:3,
+            size:'',
             sample:'',
             subtypes:['Klasik papiller karsinom'],
             encapsulation:'Yoktur',
@@ -573,12 +592,14 @@
 
         const locationInput = createInput('tumor-location-' + tumor.id, 'Yerleşim', 'text', tumor.location || '');
         const locationEl = locationInput.querySelector('input');
-        locationEl.setAttribute('placeholder','Sağ lob / Sol lob / İstmus / serbest yazım');
+        locationEl.setAttribute('placeholder','Örn: Sağ lob üst pol / serbest yazım');
+        ensureDatalist('tumor-location-examples', TUMOR_LOCATION_EXAMPLES);
+        locationEl.setAttribute('list','tumor-location-examples');
         locationEl.addEventListener('input', e => { tumor.location = e.target.value; renderReport(); });
         row1.appendChild(locationInput);
 
-        const sizeInput = createInput('tumor-size-' + tumor.id, 'Çap (mm)', 'number', String(tumor.size));
-        sizeInput.addEventListener('input', e => { tumor.size = Number(e.target.value || 0); renderReport(); });
+        const sizeInput = createInput('tumor-size-' + tumor.id, 'Çap (mm)', 'number', tumor.size === '' ? '' : String(tumor.size));
+        sizeInput.addEventListener('input', e => { tumor.size = e.target.value === '' ? '' : Number(e.target.value); renderReport(); });
         row1.appendChild(sizeInput);
 
         const sampleInput = createInput('tumor-sample-' + tumor.id, 'Örnek No', 'text', tumor.sample);
@@ -1060,14 +1081,15 @@
         const s = state;
 
         report += s.specimenType + ':\n';
-        const maxSize = s.tumors.length ? Math.max.apply(null, s.tumors.map(t => t.size)) : 0;
-        report += sentence(getTumorDiagnosisName(maxSize)) + '\n';
+        const numericTumorSizes = s.tumors.map(t => Number(t.size)).filter(v => Number.isFinite(v) && v > 0);
+        const maxSize = numericTumorSizes.length ? Math.max.apply(null, numericTumorSizes) : 0;
+        report += sentence(maxSize > 0 ? getTumorDiagnosisName(maxSize) : 'Tiroid papiller karsinom') + '\n';
         if (s.freeNote && s.freeNote.trim()) report += sentence(s.freeNote.trim()) + '\n';
 
         if (s.tumors.length === 1){
           const t = s.tumors[0];
           if (t.location) report += sentence('Tümör ' + t.location + ' yerleşimlidir') + '\n';
-          report += sentence("Tümör çapı " + t.size + " mm'dir") + '\n';
+          if (Number(t.size) > 0) report += sentence("Tümör çapı " + t.size + " mm'dir") + '\n';
           if (t.subtypes.length) report += sentence('Tümör ' + t.subtypes.join(' ve ') + ' histolojisindedir') + '\n';
           if (t.sample) report += sentence('Örnek No: ' + t.sample) + '\n';
           report += '\n' + generateFindingsText(t);
@@ -1078,7 +1100,7 @@
             const dx = getTumorDiagnosisName(t.size);
             report += (i+1) + '. Tümör: ' + dx + '\n';
             if (t.location) report += '  ' + sentence('Yerleşim: ' + t.location) + '\n';
-            report += '  ' + sentence('Çap: ' + t.size + ' mm') + '\n';
+            if (Number(t.size) > 0) report += '  ' + sentence('Çap: ' + t.size + ' mm') + '\n';
             if (t.subtypes.length) report += '  ' + sentence('Histoloji: ' + t.subtypes.join(' ve ')) + '\n';
             if (t.sample) report += '  ' + sentence('Örnek No: ' + t.sample) + '\n';
             report += generateFindingsText(t, '  ');
