@@ -150,6 +150,10 @@
         transition:border-color .15s ease, box-shadow .15s ease;
         box-shadow: inset 0 1px 0 rgba(16,24,40,.03);
       }
+      input.filled-input,select.filled-input,textarea.filled-input{
+        background:#fff7ed;
+        border-color:#fdba74;
+      }
       input:focus,select:focus,textarea:focus{
         outline:none;
         border-color: rgba(37,99,235,.55);
@@ -295,7 +299,7 @@
         specimenType: 'Total Tiroidektomi',
         tumors: [{
           id: 1,
-          location: 'Sağ lob',
+          location: '',
           size: 5,
           sample: '',
           subtypes: ['Klasik papiller karsinom'],
@@ -482,7 +486,7 @@
           const newId = Date.now();
           state.tumors.push({
             id:newId,
-            location:'Sol lob',
+            location:'',
             size:3,
             sample:'',
             subtypes:['Klasik papiller karsinom'],
@@ -567,9 +571,11 @@
 
         const row1 = createElement('div', { className:'form-row' });
 
-        const locationSelect = createSelect('tumor-location-' + tumor.id, 'Yerleşim', ['', 'Sağ lob','Sol lob','İstmus'], tumor.location);
-        locationSelect.addEventListener('change', e => { tumor.location = e.target.value; renderReport(); });
-        row1.appendChild(locationSelect);
+        const locationInput = createInput('tumor-location-' + tumor.id, 'Yerleşim', 'text', tumor.location || '');
+        const locationEl = locationInput.querySelector('input');
+        locationEl.setAttribute('placeholder','Sağ lob / Sol lob / İstmus / serbest yazım');
+        locationEl.addEventListener('input', e => { tumor.location = e.target.value; renderReport(); });
+        row1.appendChild(locationInput);
 
         const sizeInput = createInput('tumor-size-' + tumor.id, 'Çap (mm)', 'number', String(tumor.size));
         sizeInput.addEventListener('input', e => { tumor.size = Number(e.target.value || 0); renderReport(); });
@@ -800,6 +806,16 @@
         g.appendChild(createElement('h3', { textContent:title }));
         return g;
       }
+      function markFilledControl(el){
+        if (!el) return;
+        const update = () => {
+          el.classList.toggle('filled-input', String(el.value || '').trim() !== '');
+        };
+        update();
+        el.addEventListener('input', update);
+        el.addEventListener('change', update);
+      }
+
       function createInput(id,label,type,value){
         const f = createElement('div', { className:'form-field' });
         f.appendChild(createElement('label', { textContent:label }));
@@ -807,6 +823,7 @@
         input.type = type;
         input.value = value;
         if (type === 'number') input.min = '0';
+        markFilledControl(input);
         f.appendChild(input);
         return f;
       }
@@ -815,6 +832,7 @@
         f.appendChild(createElement('label', { textContent:label }));
         const ta = document.createElement('textarea');
         ta.id = id; ta.rows = 3; ta.value = value || '';
+        markFilledControl(ta);
         f.appendChild(ta);
         return f;
       }
@@ -828,6 +846,7 @@
           if (opt === selected) o.selected = true;
           sel.appendChild(o);
         });
+        markFilledControl(sel);
         f.appendChild(sel);
         return f;
       }
@@ -993,17 +1012,20 @@
 
         text += indent + sentence('Tümörde enkapsülasyon ' + normalizeEncapsulation(t.encapsulation)) + '\n';
 
-        let lvi = 'Lenfatik ve/veya venöz invazyon ' + t.lvInvasion;
+        let lvi = 'Lenfatik ve/veya venöz invazyon: ' + t.lvInvasion;
         if (t.lvInvasion === 'VARDIR'){
-          lvi += '. Lenfatik invazyon ' + (t.lymphaticInvasion ? 'VARDIR' : 'yoktur') +
-                 '. Anjioinvazyon ' + (t.angioinvasion ? 'VARDIR' : 'yoktur');
+          const lviTypes = [];
+          if (t.lymphaticInvasion) lviTypes.push('lenfatik invazyon');
+          if (t.angioinvasion) lviTypes.push('anjioinvazyon');
+          if (lviTypes.length) lvi += '. İzlenen invazyon tipi: ' + lviTypes.join(' ve ');
+          else lvi += '. İnvazyon tipi belirtilmemiştir';
         }
         text += indent + sentence(lvi) + '\n';
 
         text += indent + sentence('Perinöral invazyon ' + (t.perineuralInvasion ? 'VARDIR' : 'yoktur')) + '\n';
 
         if (t.mitoticActivity && t.mitoticActivity !== '0') text += indent + sentence('Mitotik aktivite 2 mm² alanda ' + t.mitoticActivity + ' olarak izlenmiştir') + '\n';
-        else text += indent + sentence('Mitotik aktivite yoktur') + '\n';
+        else text += indent + sentence('Mitotik aktivite izlenmemiştir') + '\n';
 
         text += indent + sentence('Nekroz ' + (t.necrosis ? 'izlenmiştir' : 'yoktur')) + '\n';
 
