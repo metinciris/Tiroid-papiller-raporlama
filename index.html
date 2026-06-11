@@ -519,7 +519,7 @@
         const addLNBtn = createElement('button', { className:'primary', innerHTML:'<i class="fa-solid fa-plus"></i> Lenf Nodu Grubu Ekle' });
         addLNBtn.addEventListener('click', () => {
           const id = Date.now();
-          state.lymphNodes.push({ id, location:'', metastatic:0, total:1, pericapsularInvasion:false });
+          state.lymphNodes.push({ id, location:'', metastatic:0, total:1, metastaticTumorSize:'', ene:false, eneSize:'', pericapsularInvasion:false });
           state.activeLnId = id;
           render();
           requestAnimationFrame(()=>requestAnimationFrame(()=>{
@@ -726,7 +726,12 @@
         metastaticInput.classList.add('small');
         metastaticInput.addEventListener('input', e => {
           ln.metastatic = Number(e.target.value || 0);
-          if (ln.metastatic <= 0) ln.pericapsularInvasion = false;
+          if (ln.metastatic <= 0) {
+            ln.metastaticTumorSize = '';
+            ln.ene = false;
+            ln.eneSize = '';
+            ln.pericapsularInvasion = false;
+          }
           render();
         });
         row1.appendChild(metastaticInput);
@@ -738,18 +743,52 @@
 
         container.appendChild(row1);
 
-        // Metastaz yoksa perikapsüler invazyon seçimi çıkmasın
+        // Metastaz yoksa metastatik tümör çapı ve ENE alanları çıkmasın
         if (ln.metastatic > 0){
+          if (ln.metastaticTumorSize == null) ln.metastaticTumorSize = '';
+          if (ln.ene == null) ln.ene = !!ln.pericapsularInvasion;
+          if (ln.eneSize == null) ln.eneSize = '';
+
+          const metaSizeInput = createInput(
+            'ln-meta-size-' + ln.id,
+            ln.metastatic > 1 ? 'En büyük metastatik tümör çapı (mm)' : 'Metastatik tümör çapı (mm)',
+            'number',
+            String(ln.metastaticTumorSize || '')
+          );
+          metaSizeInput.classList.add('small');
+          metaSizeInput.querySelector('input').step = '0.1';
+          metaSizeInput.querySelector('input').addEventListener('input', e => {
+            ln.metastaticTumorSize = e.target.value;
+            renderReport();
+          });
+          container.appendChild(metaSizeInput);
+
           container.appendChild(
             createBooleanToggle(
-              'Perikapsüler invazyon',
-              ln.pericapsularInvasion,
-              (v)=>{ ln.pericapsularInvasion = v; renderReport(); },
-              'Var',
-              'Yok',
+              'Ekstranodal yayılım (ENE)',
+              !!ln.ene,
+              (v)=>{
+                ln.ene = v;
+                ln.pericapsularInvasion = v; // eski alanla geriye dönük uyumluluk
+                if (!v) ln.eneSize = '';
+                render();
+              },
+              'VARDIR',
+              'yoktur',
               { badWhenTrue:true }
             )
           );
+
+          if (ln.ene){
+            const eneSizeInput = createInput('ln-ene-size-' + ln.id, 'ENE çapı (mm)', 'number', String(ln.eneSize || ''));
+            eneSizeInput.classList.add('small');
+            eneSizeInput.querySelector('input').step = '0.1';
+            eneSizeInput.querySelector('input').addEventListener('input', e => {
+              ln.eneSize = e.target.value;
+              renderReport();
+            });
+            container.appendChild(eneSizeInput);
+          }
         }
 
         return container;
@@ -1032,8 +1071,17 @@
             const meta = Number(ln.metastatic || 0);
             const locPrefix = ln.location ? ln.location + ' yerleşiminden ' : '';
             if (meta > 0){
+              const metaSize = (ln.metastaticTumorSize != null) ? String(ln.metastaticTumorSize).trim() : '';
+              const ene = (ln.ene != null) ? !!ln.ene : !!ln.pericapsularInvasion;
+              const eneSize = (ln.eneSize != null) ? String(ln.eneSize).trim() : '';
+
               report += sentence(locPrefix + total + ' lenf nodunun ' + meta + "'inde metastaz VARDIR (" + meta + '/' + total + ')') + ' ';
-              report += sentence('Perikapsüler invazyon ' + (ln.pericapsularInvasion ? 'VARDIR' : 'yoktur')) + '\n';
+              if (metaSize) {
+                report += sentence((meta > 1 ? 'En büyük metastatik tümör çapı ' : 'Metastatik tümör çapı ') + metaSize + ' mm') + ' ';
+              }
+              report += sentence('Ekstranodal yayılım (ENE) ' + (ene ? 'VARDIR' : 'yoktur'));
+              if (ene && eneSize) report += ' ' + sentence('ENE çapı ' + eneSize + ' mm');
+              report += '\n';
             } else {
               report += sentence(locPrefix + total + ' lenf nodu izlenmiştir. Metastaz yoktur (0/' + total + ')') + '\n';
             }
